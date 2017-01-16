@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/BingoCallerSkill/bin
+/BingoCallerSkill/obj
+/BingoCallerSkill/Properties/PublishProfiles
+/packages
+.vs

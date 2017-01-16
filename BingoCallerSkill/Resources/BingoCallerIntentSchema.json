@@ -1,0 +1,13 @@
+﻿{
+  "intents": [
+    {
+      "intent": "CallForNumberIntent",
+      "slots": [
+        {
+          "name": "Number",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    }
+  ]
+}

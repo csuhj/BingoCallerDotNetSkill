@@ -1,0 +1,7 @@
+﻿CallForNumberIntent what call is {Number}
+CallForNumberIntent what is the call for {Number}
+CallForNumberIntent what's the call for {Number}
+CallForNumberIntent what is the bingo call for {Number}
+CallForNumberIntent what's the bingo call for {Number}
+CallForNumberIntent what is {Number}
+CallForNumberIntent what's {Number}
