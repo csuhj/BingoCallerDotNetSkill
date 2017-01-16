@@ -39,12 +39,18 @@ namespace BingoCallerSkill.Services
     public Caller(IList<int> usedNumbers, BingoCalls bingoCalls)
     {
       this.bingoCalls = bingoCalls;
-      this.numbers = new bool[bingoCalls.MaxNumber];
+
+      numbers = new bool[bingoCalls.MaxNumber];
       foreach (int usedNumber in usedNumbers)
       {
         if ((usedNumber > 0) && (usedNumber <= bingoCalls.MaxNumber))
           numbers[usedNumber - 1] = true;
       }
+    }
+
+    public void Reset()
+    {
+      numbers = new bool[bingoCalls.MaxNumber];
     }
 
     public int? GetNextNumber()

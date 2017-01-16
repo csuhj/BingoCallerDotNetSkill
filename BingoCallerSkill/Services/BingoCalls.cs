@@ -47,7 +47,7 @@ namespace BingoCallerSkill.Services
     public string GetCall(int number)
     {
       if ((number > 0) && (number <= callsList.Length))
-        return callsList[number - 1] + " " + number;
+        return callsList[number - 1] + ". " + number;
 
       throw new ArgumentOutOfRangeException(nameof(number),
           "There are only calls for numbers between 1 and " + callsList.Length + " (inclusive) - "+number+" is out of range.");

@@ -5,3 +5,19 @@ CallForNumberIntent what is the bingo call for {Number}
 CallForNumberIntent what's the bingo call for {Number}
 CallForNumberIntent what is {Number}
 CallForNumberIntent what's {Number}
+
+StartGameIntent start a game
+StartGameIntent start
+StartGameIntent restart a game
+StartGameIntent restart
+
+NextNumberIntent next number
+NextNumberIntent next
+NextNumberIntent again
+NextNumberIntent another
+NextNumberIntent another number
+NextNumberIntent more
+
+QuitIntent thanks
+QuitIntent I've finished
+QuitIntent bye

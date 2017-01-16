@@ -14,6 +14,9 @@ namespace BingoCallerSkill.Speechlets
   {
     private const string NumberKey = "Number";
     private const string CallForNumberIntentKey = "CallForNumberIntent";
+    private const string StartGameIntentKey = "StartGameIntent";
+    private const string NextNumberIntentKey = "NextNumberIntent";
+    private const string QuitIntentKey = "QuitIntent";
 
     private ICallerService callerService;
 
@@ -29,7 +32,7 @@ namespace BingoCallerSkill.Speechlets
       return Task.FromResult(GetWelcomeResponse(caller));
     }
 
-    public override async Task<SpeechletResponse> OnIntentAsync(IntentRequest intentRequest, Session session)
+    public override Task<SpeechletResponse> OnIntentAsync(IntentRequest intentRequest, Session session)
     {
       // Get intent from the request object.
       var intent = intentRequest.Intent;
@@ -41,7 +44,25 @@ namespace BingoCallerSkill.Speechlets
       {
         Caller caller = EnsureCallerIsCreated(session.SessionId);
 
-        return await GetCallForNumberResponse(caller, intent, session);
+        return Task.FromResult(GetCallForNumberResponse(caller, intent));
+      }
+      else if (StartGameIntentKey.Equals(intentName))
+      {
+        Caller caller = EnsureCallerIsCreated(session.SessionId);
+
+        return Task.FromResult(GetStartGameNumberResponse(caller));
+      }
+      else if (NextNumberIntentKey.Equals(intentName))
+      {
+        Caller caller = EnsureCallerIsCreated(session.SessionId);
+
+        return Task.FromResult(GetNextNumberResponse(caller));
+      }
+      else if (QuitIntentKey.Equals(intentName))
+      {
+        callerService.RemoveCaller(session.SessionId);
+
+        return Task.FromResult(GetQuitResponse());
       }
 
       throw new SpeechletException("Invalid Intent");
@@ -59,31 +80,53 @@ namespace BingoCallerSkill.Speechlets
 
     private SpeechletResponse GetWelcomeResponse(Caller caller)
     {
-      var output = "Ask what a call is for a number between 1 and "+ caller.MaxNumber;
-      return BuildSpeechletResponse("Welcome", output, false);
+      var output = "Start a game or ask for a call between 1 and "+ caller.MaxNumber;
+      return BuildSpeechletResponse("Welcome to Bingo Caller", output, false);
     }
 
-    private async Task<SpeechletResponse> GetCallForNumberResponse(Caller caller, Intent intent, Session session)
+    private SpeechletResponse GetCallForNumberResponse(Caller caller, Intent intent)
     {
       // Retrieve number from the intent slot
       var numberSlot = intent.Slots[NumberKey];
 
       // Create response
+      string title;
       string output;
       int number;
       if (numberSlot != null && int.TryParse(numberSlot.Value, out number))
       {
+        title = number.ToString();
         output = caller.GetCall(number);
       }
       else
       {
-        // Render an error since we don't know what the date requested is
-        output = "I'm not sure what number you said, please try again.";
+        title = "Bingo call";
+        // Render an error since we don't know what the number was
+        output = "I didn't catch that, please try again.";
       }
 
       // Here we are setting shouldEndSession to false to not end the session and
       // prompt the user for input
-      return BuildSpeechletResponse(intent.Name, output, false);
+      return BuildSpeechletResponse(title, output, false);
+    }
+
+    private SpeechletResponse GetStartGameNumberResponse(Caller caller)
+    {
+      caller.Reset();
+
+      string output = "Lets start the game. "+caller.GetNextNumberCall();
+      return BuildSpeechletResponse("Start game", output, false);
+    }
+    private SpeechletResponse GetNextNumberResponse(Caller caller)
+    {
+      string output = caller.GetNextNumberCall();
+      return BuildSpeechletResponse("Start game", output, false);
+    }
+
+    private SpeechletResponse GetQuitResponse()
+    {
+      var output = "Thanks for playing";
+      return BuildSpeechletResponse("Finish game", output, true);
     }
 
     private Caller EnsureCallerIsCreated(string sessionId)
@@ -108,8 +151,8 @@ namespace BingoCallerSkill.Speechlets
       // Create the Simple card content
       var card = new SimpleCard
       {
-        Title = $"SessionSpeechlet - {title}",
-        Content = $"SessionSpeechlet - {output}"
+        Title = title,
+        Content = output
       };
 
       // Create the plain text output

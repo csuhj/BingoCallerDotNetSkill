@@ -8,6 +8,18 @@
           "type": "AMAZON.NUMBER"
         }
       ]
+    },
+    {
+      "intent": "StartGameIntent",
+      "slots": []
+    },
+    {
+      "intent": "NextNumberIntent",
+      "slots": []
+    },
+    {
+      "intent": "QuitIntent",
+      "slots": []
     }
   ]
 }
